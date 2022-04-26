@@ -1,0 +1,33 @@
+#!/bin/bash -xl
+
+ source /home/devicon/.bashrc
+ module load gcc/7.5.0
+ #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64:/usr/lib64/gcc/x86_64-suse-linux/7
+ echo $LD_LIBRARY_PATH
+
+ export CPP='/usr/bin/gcc -E'
+ export CC='/usr/bin/gcc'
+ export CXX='/usr/bin/g++'
+ export CXXCPP='/usr/bin/g++ -E'
+ export CPLUS_INCLUDE_PATH=/usr/include/c++/7
+ export F77='/usr/bin/gfortran'
+ export FC='/usr/bin/gfortran'
+ export CFLAGS="-I/home/devicon/instalacao-gcc7.5.0/libraries/include -g -O2 -march=native -mpc64"
+ export LDFLAGS="-L/home/devicon/instalacao-gcc7.5.0/libraries/lib -L/usr/lib64/gcc/x86_64-suse-linux/7 -L/usr/lib64"
+ export CXXFLAGS="-O2 -g -fopenmp -Wunused -DNOMPI"
+ export FCFLAGS="-I/home/devicon/instalacao-gcc7.5.0/libraries/include -std=f2008 -g -O2 -march=native -mpc64 -DNOMPI"
+ export LIBS="$LIBS -Wl,--as-needed -leccodes_f90 -leccodes -lgfortran -lhdf5 -lnetcdf -lnetcdff -lz -lsz -lhdf5_hl -lxml2"
+ export CPPFLAGS="-I/home/devicon/instalacao-gcc7.5.0/libraries/include -I/usr/lib64/gcc/x86_64-suse-linux/7/include -I/usr/lib64/gcc/x86_64-suse-linux/7/finclude -I/usr/lib64/gcc/x86_64-suse-linux/7/include-fixed"
+ export ICON_FCFLAGS='-fbacktrace -fbounds-check -fstack-protector-all -finit-real=nan -finit-integer=-2147483648 -finit-character=127 -O2'
+
+ ./configure	--enable-static \
+ 		--disable-shared \
+		--disable-silent-rules \
+		--with-netcdf=/home/devicon/instalacao-gcc7.5.0/libraries \
+		--enable-grib2 \
+		--with-eccodes=yes \
+		--enable-iso-c-interface \
+		--prefix="/home/devicon/instalacao-gcc7.5.0/binaries/dwd_icon_tools"
+
+ make -j 8
+ make install
