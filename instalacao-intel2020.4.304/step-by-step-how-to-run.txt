@@ -1,0 +1,69 @@
+################################
+#### Made by CT Alana      #####
+################################
+
+=>>> Step-by-step how to run:
+
+=> Grid Information:
+
+ &LMGRID
+  startlat_tot  = -49.9, startlon_tot  = -72.0,
+  pollat=90.0,        pollon=-180.0,
+  dlat=0.0625,        dlon=0.0625,
+  ie_tot=866,         je_tot=1039,        ke_tot=50,
+
+Go to website:
+
+https://oflxd21.dwd.de/cgi-bin/spp1167/webservice.cgi
+user: icon-web
+passwd: icon@dwd
+
+Your e-mail address=....
+Global parameters:
+   Centre:43
+Sub Domain #1
+domain name         = ICON-AS
+num of grid used    = 99
+parent grid ID      = 0
+Check in "write parent grid" 
+center: longitude (degrees) = -45
+        latitude  (degrees) = -18
+half width          = 32
+half height         = 27
+north pole: longitude (degrees) = -0.0
+            latitude  (degrees) = -90.0
+
+Calculo de numero de pontos a ser preenchido no website:
+
+x : 0.0625 * 866  / 2 = 27.0625
+center: longitude (degrees) = 72-27=45
+  
+y : 0.0625 * 1039 / 2 = 32.4687
+center: latitude (degrees) = 49.9-32=17.9=18
+           2 * 32
+       -------------
+       |           |
+       |           | 2 * 27 
+       |           |
+       |           |
+       |           |
+       -------------
+-72;-49 (ponto mais a sudoeste da grade)
+
+Climatology used inside the model: 1986-2015
+
+Where is the ICON Binarie:
+gast@dpns31:/home/gast/intel_19.0.2/binaries/icon_training/icon/build/x86_64-unknown-linux-gnu/bin
+
+Where is the ICONTOOLS Binarie:
+gast@dpns31:/home/gast/intel_19.0.2/binaries/icon_training/dwd_icon_tools/icontools>
+
+Where should download the libraries?
+https://data.dwd.de/source/
+Login: cosmo
+Senha: hinB+_SeSEAOZ61cd_Jm
+https://data.dwd.de/source/eccodes-2.12.5-Source.tar.gz
+
+Anothers:
+https://opendata.dwd.de/weather/lib/grib/
+

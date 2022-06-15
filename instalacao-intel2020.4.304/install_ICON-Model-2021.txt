@@ -1,0 +1,199 @@
+Installing all the libraries
+Please reffer to Section 1.1.2 of the ICON_Tutorial_2020 for further details.
+
+Directory for libraries' source code: ~/instalacao-intel2020.4.304/Binaries-source
+
+
+Before compiling all the libraries we ought to:
+
+1. UNSET the LD_LIBRARY_PATH; and
+
+After that, we can start in the following order:
+
+gast@dpns31:~/intel_20.4.304> wget https://opendata.dwd.de/weather/lib/grib/eccodes_definitions.edzw-2.14.1-1.tar.gz
+
+====================================
+1- CURL version: 7.73.0 (This library does not have dependencies: wget https://curl.se/download/curl-7.77.0.tar.gz
+
+> more install_curl.sh
+#!/bin/bash
+
+ export CC=/opt/intel/bin/icc
+ /opt/intel/bin/compilervars.sh intel64
+ export CPP="/opt/intel/bin/icc -E"
+ export CXX=/opt/intel/bin/icpc
+ export FC=/opt/intel/bin/ifort
+# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+':'}/opt/intel/lib/intel64
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64
+
+ ./configure --prefix="/home/devicon/instalacao-intel2020.4.304/libraries" --with-openssl
+
+ make && make check
+ make install
+
+
+gast@dpns31:~/intel_20.4.304/libraries/curl-7.73.0>
+gast@dpns31:~/intel_20.4.304/libraries/curl-7.73.0/bin> cp * ../../bin/
+
+2 - ZLIB version: 1.2.11 (Without dependencies): wget https://zlib.net/zlib-1.2.11.tar.gz
+
+> more install_zlib.sh
+#!/bin/bash
+
+ /opt/intel/bin/compilervars.sh intel64
+ export CC=/opt/intel/bin/icc
+ export CPP="/opt/intel/bin/icc -E"
+ export CXX=/opt/intel/bin/icpc
+ export FC=/opt/intel/bin/ifort
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ ./configure --prefix="/home/devicon/instalacao-intel2020.4.304/libraries"
+
+ make && make check
+ make install
+
+gast@dpns31:~/intel_20.4.304/libraries/zlib-1.2.11>
+
+3 - SZIP version: 2.1.1 (With dependencies of zlib): wget https://support.hdfgroup.org/ftp/lib-external/szip/2.1.1/src/szip-2.1.1.tar.gz
+
+> vi libraries/szip-2.1.1/install_szip.sh
+#!/bin/bash
+
+ /opt/intel/bin/compilervars.sh intel64
+ export CC=/opt/intel/bin/icc
+ export CPP="/opt/intel/bin/icc -E"
+ export CXX=/opt/intel/bin/icpc
+ export FC=/opt/intel/bin/ifort
+ #export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ export LIBS='-L/home/devicon/instalacao-intel2020.4.304/libraries/lib -lz'
+ export CPPFLAGS='-I/home/devicon/instalacao-intel2020.4.304/libraries/include'
+
+ ./configure --prefix="/home/devicon/instalacao-intel2020.4.304/libraries"
+
+ make && make check
+ make install
+
+4 - HDF5 (UPDATED version 1.12.0 With dependencies of zlib and szip): wget https://www.hdfgroup.org/package/hdf5-1-12-0-tar-gz/?wpdmdl=14582&refresh=5fb56da3cc6c11605725603 
+
+> vi libraries/hdf5-1.12.0/install_hdf5.sh
+#!/bin/bash
+
+ /opt/intel/bin/compilervars.sh intel64
+ export CC=/opt/intel/bin/icc
+ export CPP="/opt/intel/bin/icc -E"
+ export CXX=/opt/intel/bin/icpc
+ export FC=/opt/intel/bin/ifort
+ export F9X=/opt/intel/bin/ifort
+ export CFLAGS='-I/home/devicon/instalacao-intel2020.4.304/libraries/include'
+ export LIBS='-L/opt/intel/lib/intel64 -limf -L/home/devicon/instalacao-intel2020.4.304/libraries/lib -lz -lsz'
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ ./configure --prefix="/home/devicon/instalacao-intel2020.4.304/libraries" --enable-fortran --with-default-api-version=v18
+
+ make && make check
+ make install
+
+5 - NETCDF-C-4.7.4 (UPDATED version With dependencies of zlib, szip and HDF5): wget https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-c-4.8.0.tar.gz
+
+> vi libraries/netcdf-c-4.8.0/install_netcdfc.sh
+#!/bin/bash
+
+ /opt/intel/bin/compilervars.sh intel64
+ export CC=/opt/intel/bin/icc
+ export CXX=/opt/intel/bin/icpc
+ export F77=/opt/intel/bin/ifort
+ export FC=/opt/intel/bin/ifort
+ export F9X=/opt/intel/bin/ifort
+ export CPP="/opt/intel/bin/icc -E"
+ export FFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CXXFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CXXCPP='/opt/intel/bin/icpc -E'
+ export LIBS='-L/opt/intel/lib/intel64 -limf -lsvml -lirng -lintlc -L/home/devicon/instalacao-intel2020.4.304/libraries/lib -lz -lsz -lhdf5 -lcurl'
+ export CPPFLAGS='-I/home/devicon/instalacao-intel2020.4.304/libraries/include'
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ ./configure --prefix="/home/devicon/instalacao-intel2020.4.304/libraries"
+
+ make && make check
+ make install
+
+
+6 - NETCDF-C-4.5.3-fortran (UPDATED version With dependencies of zlib, curl and HDF5): ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-fortran-4.5.3.tar.gz
+
+> vi libraries/netcdf-fortran-4.5.3/install_netcdf-fortran.sh
+
+#!/bin/bash
+
+ /opt/intel/bin/compilervars.sh intel64
+ export CC=/opt/intel/bin/icc
+ export CXX=/opt/intel/bin/icpc
+ export F77=/opt/intel/bin/ifort
+ export FC=/opt/intel/bin/ifort
+ export F90=/opt/intel/bin/ifort
+ export CPP="/opt/intel/bin/icc -E"
+ export FFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CXXFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CXXCPP='/opt/intel/bin/icpc -E'
+ export LIBS='-L/opt/intel/lib/intel64 -limf -lsvml -lirng -lintlc -L/home/devicon/instalacao-intel2020.4.304/libraries/lib -lz -lsz -lhdf5 -lcurl'
+ export CPPFLAGS='-I/home/devicon/instalacao-intel2020.4.304/libraries/include'
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ ./configure --prefix="/home/devicon/instalacao-intel2020.4.304/libraries"
+
+ make && make check
+ make install
+
+7 - CMAKE-3.19.1 (in order to compiler eccodes): wget https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
+
+> vi libraries/cmake-3.20.2/install_cmake.sh
+#!/bin/bash
+
+ /opt/intel/bin/compilervars.sh intel64
+ export CC=/opt/intel/bin/icc
+ export CXX=/opt/intel/bin/icpc
+ export F9X=/opt/intel/bin/ifort
+ export CPP="/opt/intel/bin/icc -E"
+ export LIBS='-L/opt/intel/lib/intel64 -limf -L/home/devicon/instalacao-intel2020.4.304/libraries/lib -lz -lsz -lcurl -lnetcdf -lhdf5'
+ export CPPFLAGS='-I/home/devicon/instalacao-intel2020.4.304/libraries/include'
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ ./bootstrap --prefix=/home/devicon/instalacao-intel2020.4.304/libraries
+ make
+ make install
+
+8 - ECCODES-2.21.1 (UPDATED version With dependencies of zlib, szip, curl, netcdf and netcdff): wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.21.0-Source.tar.gz?api=v2
+
+> vi libraries/eccodes-2.21.0-Source/install_eccodes.sh
+#!/bin/bash
+
+mkdir build
+cd build
+
+ export CC=/opt/intel/bin/icc
+ export CXX=/opt/intel/bin/icpc
+ export F77=/opt/intel/bin/ifort
+ export FC=/opt/intel/bin/ifort
+ export F90=/opt/intel/bin/ifort
+ export CPP="/opt/intel/bin/icc -E"
+ export FFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CXXFLAGS='-O3 -xHost -ip -no-prec-div -static-intel'
+ export CXXCPP='/opt/intel/bin/icpc -E'
+ export LIBS='-L/home/devicon/instalacao-intel2020.4.304/libraries/lib -lz -lsz -lhdf5 -lcurl -lnetcdf -lnetcdff'
+ export CPPFLAGS='-I/home/devicon/instalacao-intel2020.4.304/libraries/include -I/opt/intel/include/intel64 -I/opt/intel/include'
+ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/intel/lib/intel64:/home/devicon/instalacao-intel2020.4.304/libraries/lib
+
+ /home/devicon/instalacao-intel2020.4.304/libraries/bin/cmake -DCMAKE_C_COMPILER=/opt/intel/bin/icc -DCMAKE_Fortran_COMPILER=/opt/intel/bin/ifort -DCMAKE_INSTALL_PREFIX=/home/devicon/instalacao-intel2020.4.304/libraries -DENABLE_NETCDF=ON -DNETCDF_PATH=/home/devicon/instalacao-intel2020.4.304/libraries/lib -DENABLE_JPG=OFF -DENABLE_PNG=OFF -DENABLE_PYTHON=OFF -DENABLE_FORTRAN=ON -DBUILD_SHARED_LIBS=BOTH CFLAGS=-fPIC /home/devicon/instalacao-intel2020.4.304/libraries/eccodes-2.21.0-Source
+
+
+ make
+ ctest
+ make install
+
+ 
+Before installing the ICON MODEL, load the module you want the model to be compiled with:
+
+1. SET module load intel/20.4.304 (FALTA FAZER!!!!)
